@@ -8,57 +8,55 @@
 
 var fs = require("fs");   
 var keys = require("./keys.js");
-var request = require('request');
+var request = require("request");
 
 var Twitter = require("twitter");    
 // var spotify = require("spotify"); 
-var client = new Twitter(keys.twitterKeys); 
-
+// var client = new Twitter(keys.twitterKeys); 
 var command = process.argv[2];  
 var value = process.argv[3]; 
+
+
 
 switch (command) {
     case "my-tweets":
         myTwitter();
-        
-
-}
+        }
 
 
 
 
-// // my-tweets function
+// my-tweets function
 function myTwitter(){
+  
+  var client = new Twitter({
+        consumer_key: keys.consumer_key,
+        consumer_secret: keys.consumer_secret,
+        access_token_key: keys.access_token_key,
+        access_token_secret: keys.access_token_secret
+    });
 
-    var params = {
-        screen_name: 'AB-UNCC',
-        count: '20',
-   
-    }
+  //Display last 20 Tweets
+  var params = {screen_name: 'ab_uncc', count: 20, exclude_replies:true, trim_user:true};
+    client.get('statuses/user_timeline', params, function(error, tweets, response) {
+        if (!error) {
+          //console.log(tweets);
+          tweetsArray = tweets;
 
-    // this is the call to twitter
-    client.get('statuses/user_timeline', params, function(err, timeline, response){
-        if(!err){
-            for(tweet in timeline){
-                //this creates the variable tdate which will store the result of the date from the twitter call for easier access later
-                var tDate = new Date(timeline[tweet].created_at);
-
-                //console.log all of the tweets organizing them by tweet# followed by the date of the tweet and finally the text of the tweet itself
-                console.log("Tweet #: " + (parseInt(tweet)+1) + " ");
-                console.log(tDate.toString().slice(0, 24) + " ");
-                console.log(timeline[tweet].text);
-                console.log("\n");
-
-                //append all of this information to the txt file 
-                fs.appendFile('log.txt', "Tweet #: " + (parseInt(tweet)+1) + "\n");
-                fs.appendFile('log.txt', timeline[tweet].text + "\n");
-                fs.appendFile('log.txt', "\n");
-
-            }
-        } 
-    })
+          for(i=0; i<tweetsArray.length; i++){
+            console.log("Created at: " + tweetsArray[i].created_at);
+            console.log("Text: " + tweetsArray[i].text);
+            console.log('--------------------------------------');
+          }
+        }
+        else{
+          console.log(error);
+        }
+  });
 
 }
+
+
 
 
 
