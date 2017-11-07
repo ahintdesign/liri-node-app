@@ -16,6 +16,10 @@ var Spotify = require("node-spotify-api");
 var command = process.argv[2];  
 var value = process.argv[3]; 
 
+// console.log(keys.id);
+
+// console.log(keys.secret);
+
 
 
 switch (command) {
@@ -25,6 +29,10 @@ switch (command) {
 
     case "spotify-this-song":
     spotify();
+    break;
+
+    case "movie-this":
+    findMovie();
      
         }
 
@@ -68,12 +76,20 @@ var spotify = new Spotify({
  secret: keys.secret
 });
  
-spotify.search({ type: 'track', query: 'The Sign' }, function(err, data) {
+spotify.search({ type: 'album', query: value }, function(err, data) {
   if (err) {
     return console.log('Error occurred: ' + err);
   }
  
 console.log(data); 
+
+//console.log(JSON.stringify(data, null, 2));
+       console.log("Artists: " + data.albums.items[0].artists[0].name);
+       // console.log("The Song's name: " + aSong);
+       console.log("Preview link: " + data.albums.href);
+       console.log("The album that the song is from: " + data.albums.items[0].name);
+
+
 });
 }
 

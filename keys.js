@@ -17,3 +17,5 @@ secret: '29409241962c4756b072c2437eeee0cf'
 
 
 module.exports = twitterKeys;
+
+module.exports = spotify;
