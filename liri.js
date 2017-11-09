@@ -11,6 +11,8 @@ var keys = require("./keys.js");
 var request = require("request");
 var Twitter = require("twitter");    
 var Spotify = require("node-spotify-api");
+var omdb = require('omdb');
+
 // var spotify = require("spotify"); 
 // var client = new Twitter(keys.twitterKeys); 
 var command = process.argv[2];  
@@ -28,12 +30,17 @@ switch (command) {
         break;
 
     case "spotify-this-song":
-    spotify();
+    spotify(value);
     break;
 
     case "movie-this":
     findMovie();
-     
+    break;
+
+    case "do-what-it-says":
+    doWhatItSays();
+    break;
+
         }
 
 
@@ -69,7 +76,7 @@ function myTwitter(){
 
 
 // // spotify function             
-function spotify() {
+function spotify(value) {
 
 var spotify = new Spotify({
  id: keys.id,
@@ -81,7 +88,7 @@ spotify.search({ type: 'album', query: value }, function(err, data) {
     return console.log('Error occurred: ' + err);
   }
  
-console.log(data); 
+
 
 //console.log(JSON.stringify(data, null, 2));
        console.log("Artists: " + data.albums.items[0].artists[0].name);
@@ -97,6 +104,41 @@ console.log(data);
 
 
 // // movie-this function             
-// function spotify-this-song () {
+ function findMovie() {
 
-// }; 
+  request("http://www.omdbapi.com/?t=" + value + "&y=&plot=short&apikey=40e9cece", function(error, response, body) {
+
+  // If the request is successful (i.e. if the response status code is 200)
+  if (!error && response.statusCode === 200) {
+var data = JSON.parse (body); 
+console.log(data.Title);
+    // console.log(movie.title, movie.year, movie.imdb.rating, movie.rottenTomatoes, movie.country, movie.language);
+    // console.log(movie.plot);
+    // console.log(movie.cast);
+  }
+
+    //  if(!movie) {
+    //     return console.log('Movie not found!');
+    // }
+
+
+});
+
+}
+
+
+function doWhatItSays () {
+ fs.readFile("random.txt" , "utf8" , function(err, data) {
+
+
+var dataArray = data.split(","); 
+
+spotify(dataArray[1]);
+
+ })
+
+}
+
+
+
+
